@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/CSS/Base.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <title>
+            Default Title
+    </title>
+
+    {% block style %}
+
+    {% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="left-side">
+                <a href="{% url 'posts:list' %}" class="navbar-brand">Dusty</a>
+                <a href="{% url 'posts:list' %}" class="navbar-brand">📤</a>
+            </div>
+            <div class="centered">
+                <form action="% url 'search' %}" method="get" class="search-form">
+                    <input type="text" name="q" placeholder="Search...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li><a href="accounts/profile">Profile</a></li>
+                    <li><a href="accounts/logout">Logout</a></li>
+                {% else %}
+                    <li><a href="/users/login">Login</a></li>
+                    <li><a href="accounts/register">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    {% block header %}
+        {% if not header_provided %}
+            <!-- Do nothing here -->
+        {% else %}
+            <header>
+                {{ header }}
+            </header>
+        {% endif %}
+    {% endblock %}
+
+    <!-- Main Content -->
+    <main>
+            {% block content %}
+            
+            {% endblock %}
+    </main>
+
+
+    
+    {% block footer %}
+        
+    {% endblock footer %}
+        
+
+    <!-- JavaScript Block -->
+    <script src="{% static 'js/script.js' %}"></script>
+    </body>
+</html>

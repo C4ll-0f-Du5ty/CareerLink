@@ -1,0 +1,142 @@
+/* body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+} */
+
+.navbar {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    line-height: 1.6;
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+/* updated */
+
+.left-side {
+    display: flex;
+    align-items: center;
+}
+
+.centered {
+    display: flex;
+    justify-content: space-around;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* width: 100%; */
+}
+
+
+/* end Update */
+
+.centered .search-form {
+    display: flex;
+    align-items: center;
+    /* margin-left: 20px; */
+    /* width: 100%; */
+}
+
+.search-form input[type="text"] {
+    padding: 8px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    width: 250px;
+}
+
+.search-form button {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 0 4px 4px 0;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+}
+
+.navbar-nav li {
+    margin-left: 20px;
+}
+
+.navbar-nav a {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-nav a:hover {
+    color: #ff9800;
+}
+
+.page-header {
+    background-color: #fff;
+    padding: 60px 0;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+/* main {
+    padding-top: 80px;
+} */
+
+.title-block {
+    background-color: #f0f0f0;
+    padding: 40px 0;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .search-form {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 20px;
+    }
+
+    .navbar-nav {
+        margin-left: 0;
+        margin-right: 20px;
+    }
+}
