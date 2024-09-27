@@ -1,0 +1,114 @@
+{% extends "Base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connective Canvas - Your New Social Media Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'CSS/landing_page.css' %}">
+    <link rel="stylesheet" href="{% static 'JS/landing_page.js' %}">
+</head>
+
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Paint Your Social Story</h1>
+            <p>Where creativity meets connection</p>
+            <a href="accounts/login" class="cta-button">Join Now</a>
+        </div>
+    </div>
+
+    <section class="features">
+        <div class="feature-card">
+            <img src="../static/images/privacy.png" alt="Feature Icon" class="feature-icon">
+            <h3>Enhanced Privacy</h3>
+            <p>Control who sees what you share</p>
+        </div>
+        <div class="feature-card">
+            <img src="{% static 'images/tools.png' %}" alt="Feature Icon" class="feature-icon">
+            <h3>Creative Tools</h3>
+            <p>Express yourself with our unique features</p>
+        </div>
+        <div class="feature-card">
+            <img src="{% static 'images/community.png' %}" alt="Feature Icon" class="feature-icon">
+            <h3>Community Building</h3>
+            <p>Join groups that share your interests</p>
+        </div>
+        <div class="feature-card">
+            <img src="{% static 'images/cross.png' %}" alt="Feature Icon" class="feature-icon">
+            <h3>Cross-platform Syncing</h3>
+            <p>Access your content anywhere, anytime</p>
+        </div>
+    </section>
+
+    <section class="community-highlights">
+        <div class="grid-container">
+            <div class="community-item">
+                <img src="{% static 'images/C1.jpg' %}" alt="Community Image">
+                <div class="overlay">
+                    <h4>Artists Unite</h4>
+                    <p>Join our vibrant art community</p>
+                </div>
+            </div>
+            <div class="community-item">
+                <img src="{% static 'images/C2.jpg' %}" alt="Community Image">
+                <div class="overlay">
+                    <h4>Foodies Corner</h4>
+                    <p>Share your culinary adventures</p>
+                </div>
+            </div>
+            <div class="community-item">
+                <img src="{% static 'images/C3.jpg' %}" alt="Community Image">
+                <div class="overlay">
+                    <h4>Travel Enthusiasts</h4>
+                    <p>Explore the world together</p>
+                </div>
+            </div>
+            <!-- Add more community items here -->
+        </div>
+    </section>
+
+    <section class="cta-section">
+        {% comment %} <video autoplay loop muted playsinline>
+            <source src="background-video.mp4" type="video/mp4">
+        </video> {% endcomment %}
+        <div class="cta-content">
+            <h2>Ready to Connect?</h2>
+            <a href="accounts/login" class="large-cta-button">Sign Up Now</a>
+            <p>Join over 1 million users worldwide</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-nav">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#" target="_blank"><img src="{% static 'icons/apple.png' %}" alt="Apple App Store"></a>
+                    <a href="#" target="_blank"><img src="{% static 'icons/google.png' %}" alt="Google Play Store"></a>
+                    <a href="#" target="_blank"><img src="{% static 'icons/facebook.png' %}" alt="Facebook"></a>
+                    <a href="#" target="_blank"><img src="{% static 'icons/twitter.png' %}" alt="Twitter"></a>
+                    <a href="#" target="_blank"><img src="{% static 'icons/insta.png' %}" alt="Instagram"></a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2023 Dusty. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
