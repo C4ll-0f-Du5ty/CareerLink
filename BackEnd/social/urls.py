@@ -7,4 +7,6 @@ urlpatterns = [
     path("posts/latest", views.get_latest_posts),
     path("search/", views.search),
     path("new/", views.create_post),
+    path('posts/<int:post_id>/edit/', views.edit_post),
+    path('posts/<int:post_id>/delete/', views.delete_post),
 ]

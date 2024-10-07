@@ -1,34 +1,8 @@
-
-import json
-from channels.generic.websocket import WebsocketConsumer
-
-# class ChatConsumer(WebsocketConsumer):
-    # def connect(self):
-    #     # Log connection attempt
-    #     print(f"WebSocket connected: {self.scope['client']}")
-        
-    #     self.accept()  # Accept the WebSocket connection
-    #     self.send(text_data=json.dumps({
-    #         'type': 'connection_established',
-    #         'message': "Welcome",
-    #     }))
-
-    # def receive(self, text_data=None, bytes_data=None):
-    #     text_data_json = json.loads(text_data)
-    #     message = text_data_json['message']
-    #     if len(message.strip()) > 0:
-    #         print("message:", message.strip())
-    #         self.send(text_data=json.dumps({
-    #             'type': 'chat',
-    #         'message': message,
-    #         }))
-    
-    # def disconnect(self, close_code):
-    #     # Log disconnect event
-    #     print(f"WebSocket disconnected: {self.scope['client']}, code: {close_code}")
-
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+# from asgiref.sync import async_to_sync
+from asgiref.sync import sync_to_async
+from users.models import CustomUser, ChatMessage
 
 class ChatConsumer(AsyncWebsocketConsumer):  # Use AsyncWebsocketConsumer
     async def connect(self):
@@ -44,9 +18,34 @@ class ChatConsumer(AsyncWebsocketConsumer):  # Use AsyncWebsocketConsumer
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
-        message = json.loads(text_data)['message']
+        data = json.loads(text_data)
+        message = data['message']
+        sender_username = self.scope['user'].username
+        
+        Users = self.room_name.split("_")
+        
+        if sender_username == Users[0]:
+            receiver_username = Users[1]
+            if isinstance(sender_username, str):
+                sender_username = Users[0]
+        else:
+            receiver_username = Users[0]
+            sender_username = Users[1]
 
-        # Send message to room group
+        # print("-----------------------------------------------------------")
+        # print(message)
+        # print()
+        # print(Users, "---now------------Sender:",sender_username, "::::::::::::::Reciver:", receiver_username,"--------------------------------")
+        sender = await sync_to_async(CustomUser.objects.get)(username=sender_username)
+        receiver = await sync_to_async(CustomUser.objects.get)(username=receiver_username)
+
+        # Create the message in the database
+        await sync_to_async(ChatMessage.objects.create)(
+            sender=sender,
+            receiver=receiver,
+            content=message
+        )
+
         await self.channel_layer.group_send(self.room_group_name, {
             'type': 'chat_message',
             'message': message

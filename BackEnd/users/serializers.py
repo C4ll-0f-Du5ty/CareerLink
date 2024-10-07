@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, UserProfile
+from .models import CustomUser, UserProfile, ChatMessage
 import urllib.parse
 
 
@@ -39,3 +39,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_friends_count(self, obj):
         return obj.friends.count()
+
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatMessage
+        fields = ['id', 'sender', 'receiver', 'content', 'timestamp']

@@ -70,7 +70,31 @@ class FriendRequest(models.Model):
 
 
 class ChatMessage(models.Model):
-    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    content = models.TextField(blank=True, null=True)
-    file = models.FileField(upload_to='chat_files/', blank=True, null=True)
-    thread = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
+    """
+    Model to store chat messages between users.
+    """
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="sent_messages", default='')
+    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="received_messages", default='')
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender} -> {self.receiver}: {self.content[:30]}"
+
+
+class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('friend_request', 'Friend Request'),
+        ('like', 'Like'),
+        ('share', 'Share'),
+        # Add more types as needed
+    ]
+    
+    user = models.ForeignKey(CustomUser, related_name='notifications', on_delete=models.CASCADE)
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    from_user = models.ForeignKey(CustomUser, related_name='from_user', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.from_user} {self.notification_type} to {self.user}"

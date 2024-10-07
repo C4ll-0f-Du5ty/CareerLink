@@ -7,7 +7,7 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 function Nav() {
-    let { logoutUser } = useContext(AuthContext)
+    let { logoutUser, user } = useContext(AuthContext)
     const [query, setQuery] = useState('');
     const navigate = useNavigate();
 
@@ -35,10 +35,15 @@ function Nav() {
                         </form>
                     </div>
                     <ul className={style['navbar-nav']}>
-                        <li><a href="/profile">Profile</a></li>
-                        <li><a onClick={logoutUser} href="/">Logout</a></li>
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/register">Register</a></li>
+                        {user ? <> <li><a href="/profile">Profile</a></li>
+                            <li><a onClick={logoutUser} href="/">Logout</a></li></>
+                            :
+                            <><li><a href="/login">Login</a></li>
+                                <li><a href="/register">Register</a></li>
+                            </>
+                        }
+
+
                     </ul>
                 </div>
             </nav>

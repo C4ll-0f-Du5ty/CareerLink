@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 import urllib.parse
+from django.db.models import Q
+from django.http import JsonResponse
 # Create your views here.
 
 
@@ -51,7 +53,7 @@ def get_latest_posts(request):
 #         'posts': post_serializer.data if query else []
 #         })
 
-from django.db.models import Q
+
 @api_view(['GET'])
 def search(request):
     query = request.query_params.get('q')
@@ -101,3 +103,71 @@ def create_post(request):
         serializer.save(author=request.user)
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def edit_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+
+        # Check if the user is the author of the post
+        if post.author != request.user:
+            return JsonResponse({'detail': 'Not authorized to edit this post.'}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = PostSerializer(post, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    except Post.DoesNotExist:
+        return JsonResponse({'detail': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+
+        # Check if the user is the author of the post
+        if post.author != request.user:
+            return JsonResponse({'detail': 'Not authorized to delete this post.'}, status=status.HTTP_403_FORBIDDEN)
+
+        post.delete()
+        return JsonResponse({'detail': 'Post deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+    except Post.DoesNotExist:
+        return JsonResponse({'detail': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def like_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+            liked = False
+        else:
+            post.likes.add(request.user)
+            liked = True
+        return Response({'liked': liked, 'likes_count': post.likes.count()})
+    except Post.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def share_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        post.shares.add(request.user)
+        return Response({'shares_count': post.shares.count()})
+    except Post.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)

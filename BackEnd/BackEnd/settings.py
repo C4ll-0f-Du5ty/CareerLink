@@ -60,7 +60,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=500),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     # to make remake a refresh token if the user was still using the app and logged
