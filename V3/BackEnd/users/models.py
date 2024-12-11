@@ -66,7 +66,9 @@ class FriendRequest(models.Model):
         self.to_user.userprofile.friends.add(self.from_user)
 
     def __str__(self):
-        return f"Friend request from {self.from_user} to {self.to_user}"
+        return f"Friend request from {self.from_user} to {self.to_user}\
+            its state is {self.is_accepted}\
+                created at {self.created_at}"
 
 
 class ChatMessage(models.Model):

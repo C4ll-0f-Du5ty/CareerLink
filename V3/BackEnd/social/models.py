@@ -6,12 +6,13 @@ class Post(models.Model):
     """
     Model to represent user posts which can have different categories like job posts or social content.
     """
+
     CATEGORY_CHOICES = [
         ('job', 'Job Post'),
         ('social', 'Social Post'),
         ('education', 'Educational Post'),
     ]
-    
+
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, default="default")
     content = models.TextField()

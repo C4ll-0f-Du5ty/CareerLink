@@ -11,7 +11,6 @@ import PrivateRoute from './Private/privateRoute.jsx'
 import Profile from './Authentication/Profile/Profile.jsx'
 import ErrorRoute from './Private/Error.jsx'
 
-import ProfilePage from './Authentication/Profile/ProfilePage.jsx'
 import HomePage from './HomePage/HomePage.jsx'
 
 import SearchPage from './Search/SearchPage.jsx'
@@ -38,7 +37,7 @@ function App() {
             <Route element={<ErrorRoute><Register /></ErrorRoute>} path='/register' />
 
 
-            <Route element={<PrivateRoute><ProfilePage /></PrivateRoute>} path='/profilesss' />
+            {/* <Route element={<PrivateRoute><ProfilePage /></PrivateRoute>} path='/profilesss' /> */}
             <Route element={<PrivateRoute><HomePage /></PrivateRoute>} path='/homepage' />
             <Route element={<SearchPage />} path='/search' />
             <Route element={<PrivateRoute><Post /></PrivateRoute>} path='/PostCard' />

@@ -3,10 +3,8 @@ import { Rnd } from 'react-rnd'; // For draggable chat window
 import { Modal, Select, Input, Button } from 'antd';
 import AuthContext from '../../Context/AuthContext';
 import Messages from '../../Chats/Messages';
-import Notifications from '../../Chats/Notifications';
-import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-
+import PostCard from '../../Card/PostCard'
 
 const { Option } = Select;
 
@@ -14,16 +12,28 @@ const Profile = () => {
     let { user, authTokens } = useContext(AuthContext);
     const [profile, setProfile] = useState({});
     const [friends, setFriends] = useState([]);
+
+
+    // Posts:-
     const [posts, setPosts] = useState([]);
+    const [liked, setLiked] = useState({})
     const [newPost, setNewPost] = useState({ title: '', content: '', category: 'social' });
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [ispostModalVisible, setispostModalVisible] = useState(false);
+    const [editingPost, setEditingPost] = useState(null); // State to store the post being edited
+    const [editPostData, setEditPostData] = useState({ title: '', content: '', category: 'social' }); // Data for editing
+
+
+
     const [loading, setLoading] = useState(true);
+
+
+
     const [activeFriend, setActiveFriend] = useState(null);
     const [chatVisible, setChatVisible] = useState(false); // Toggle chat window
 
     // updates for changing the Profile Image:
     const [image, setImage] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false);
+    const [isImageModalVisible, setisImageModalVisible] = useState(false);
 
     const handleImageChange = (event) => {
         setImage(event.target.files[0]);
@@ -42,8 +52,6 @@ const Profile = () => {
         });
 
         if (response.ok) {
-            // Optionally refresh the page or update the UI
-            // alert('Profile image updated successfully!');
             toast('Profile image updated successfully!', {
                 position: "top-center",
                 autoClose: 5000,
@@ -53,191 +61,16 @@ const Profile = () => {
                 draggable: true,
                 progress: undefined,
             });
-            setModalVisible(false);
+            setisImageModalVisible(false);
         } else {
             alert('Failed to update profile image.');
         }
     };
-
-    // New Upadtes for adding Notifications..:
-    const [notifications, setNotifications] = useState([]);
-
-    const fetchNotifications = async () => {
-        const response = await fetch(`http://localhost:8000/users/notifications/${user.username}/`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Dusty ' + String(authTokens.access),
-            },
-        });
-        const data = await response.json();
-        setNotifications(data);
-    };
+    // ----------------------------- Image Modifications End -----------------------------
 
 
-    // Post functionality:
-    const [liked, setLiked] = useState({})
 
-    const likePost = async (postId) => {
-        try {
-            const response = await fetch(`http://localhost:8000/social/likePost/${postId}/`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Dusty ${authTokens.access}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-            const data = await response.json();
-            setPosts((prevPosts) =>
-                prevPosts.map((post) => (post.id === postId ? { ...post, likes_count: data.likes_count, liked: data.liked } : post))
-            );
-            // Toggle the liked status in the liked state
-            setLiked(prevLiked => ({
-                ...prevLiked,
-                [postId]: !prevLiked[postId],
-            }));
-        } catch (error) {
-            console.error('Error liking the post:', error);
-        }
-    };
-
-    // Function to handle sharing a post
-    const sharePost = async (postId) => {
-        try {
-            const response = await fetch(`http://localhost:8000/social/sharePost/${postId}/`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Dusty ${authTokens.access}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-            const data = await response.json();
-            setPosts((prevPosts) =>
-                prevPosts.map((post) => (post.id === postId ? { ...post, shares_count: data.shares_count } : post))
-            );
-        } catch (error) {
-            console.error('Error sharing the post:', error);
-        }
-    };
-
-
-    // Updates+++++++++++++++++++++++++++++++++
-
-    const [editingPost, setEditingPost] = useState(null); // State to store the post being edited
-    const [editPostData, setEditPostData] = useState({ title: '', content: '', category: 'social' }); // Data for editing
-    const handleEditPost = (post) => {
-        setEditingPost(post);
-        setEditPostData({ title: post.title, content: post.content, category: post.category });
-        updatePost()
-    };
-
-    const updatePost = async () => {
-        const response = await fetch(`http://localhost:8000/social/posts/${editingPost.id}/edit/`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Dusty ' + String(authTokens.access),
-            },
-            body: JSON.stringify(editPostData),
-        });
-
-        if (response.ok) {
-            const updatedPost = await response.json();
-            setPosts((prevPosts) => prevPosts.map((post) => (post.id === updatedPost.id ? updatedPost : post)));
-            setEditingPost(null); // Close the edit modal
-            setEditPostData({ title: '', content: '', category: 'social' }); // Reset edit data
-        }
-    };
-
-    const deletePost = async (postId) => {
-        const response = await fetch(`http://localhost:8000/social/posts/${postId}/delete/`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Dusty ' + String(authTokens.access),
-            },
-        });
-
-        if (response.ok) {
-            setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
-        }
-    };
-
-    const PostCard = ({ post, onEdit, onDelete }) => {
-        return (
-            <motion.div
-                className="relative border p-6 rounded-lg bg-white shadow-lg hover:shadow-xl transition"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
-            >
-                {/* Options button */}
-                <div className="absolute top-4 right-4">
-                    <Select
-                        defaultValue="Options"
-                        style={{ width: 100 }}
-                        onChange={(value) => {
-                            if (value === 'edit') {
-                                onEdit(post);
-                            } else if (value === 'delete') {
-                                onDelete(post.id);
-                            }
-                        }}
-                    >
-                        <Option value="edit">Edit</Option>
-                        <Option value="delete">Delete</Option>
-                    </Select>
-                </div>
-
-                {/* Post Header */}
-                <div className="flex items-center mb-4">
-                    <img
-                        src={`http://localhost:8000${profile.user?.profile_image}`}
-                        alt="Profile"
-                        className="w-10 h-10 rounded-full"
-                    />
-                    <div className="ml-4">
-                        <h2 className="text-md font-semibold">{post.author}</h2>
-                        <p className="text-gray-500 text-sm">{post.title}</p>
-                    </div>
-                </div>
-
-                {/* Post Content */}
-                <p className="mb-4 text-gray-700">{post.content}</p>
-
-                {/* Like and Share Counts */}
-                <div className="flex justify-between items-center mt-4">
-                    <div className="text-gray-600 text-sm">
-                        <span className="mr-4">Likes: {post.likes_count}</span>
-                        <span>Shares: {post.shares_count}</span>
-                    </div>
-                    <p className="text-gray-400 text-xs">
-                        Created at: {new Date(post.created_at).toLocaleString()}
-                    </p>
-                </div>
-
-                {/* Like and Share Buttons */}
-                <div className="flex justify-between items-center mt-4">
-                    <Button
-                        type={liked[post.id] ? 'primary' : 'default'}
-                        onClick={() => likePost(post.id)}
-                        className="w-24"
-                    >
-                        {liked[post.id] ? 'Dislike' : 'Like'}
-                    </Button>
-                    <Button
-                        type="default"
-                        onClick={() => sharePost(post.id)}
-                        className="w-24"
-                    >
-                        Share
-                    </Button>
-                </div>
-            </motion.div>
-        );
-    };
-
-    // ________________________________________
-
+    // Fetch All Profile DATA
     useEffect(() => {
         const fetchProfile = async () => {
             const response = await fetch(`http://localhost:8000/users/profile/${user.username}/`, {
@@ -281,9 +114,91 @@ const Profile = () => {
         fetchProfile();
         fetchFriends();
         fetchPosts();
-        fetchNotifications()
         setLoading(false);
     }, [user.username]);
+
+    // =================================== POSTS =================================
+
+
+    const likePost = async (postId) => {
+        try {
+            const response = await fetch(`http://localhost:8000/social/likePost/${postId}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Dusty ${authTokens.access}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            setPosts((prevPosts) =>
+                prevPosts.map((post) => (post.id === postId ? { ...post, likes_count: data.likes_count, liked: data.liked } : post))
+            );
+            // Toggle the liked status in the liked state
+            setLiked(prevLiked => ({
+                ...prevLiked,
+                [postId]: !prevLiked[postId],
+            }));
+        } catch (error) {
+            console.error('Error liking the post:', error);
+        }
+    };
+
+    // Function to handle sharing a post
+    const sharePost = async (postId) => {
+        try {
+            const response = await fetch(`http://localhost:8000/social/sharePost/${postId}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Dusty ${authTokens.access}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            setPosts((prevPosts) =>
+                prevPosts.map((post) => (post.id === postId ? { ...post, shares_count: data.shares_count } : post))
+            );
+        } catch (error) {
+            console.error('Error sharing the post:', error);
+        }
+    };
+
+    const updatePost = async () => {
+        const response = await fetch(`http://localhost:8000/social/posts/${editingPost.id}/edit/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Dusty ' + String(authTokens.access),
+            },
+            body: JSON.stringify(editPostData),
+        });
+
+        if (response.ok) {
+            const updatedPost = await response.json();
+            setPosts((prevPosts) => prevPosts.map((post) => (post.id === updatedPost.id ? updatedPost : post)));
+            setEditingPost(null); // Close the edit modal
+            setEditPostData({ title: '', content: '', category: 'social' }); // Reset edit data
+            setispostModalVisible(false)
+        }
+    };
+
+    const deletePost = async (postId) => {
+        const response = await fetch(`http://localhost:8000/social/posts/${postId}/delete/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Dusty ' + String(authTokens.access),
+            },
+        });
+
+        if (response.ok) {
+            setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+        }
+    };
+
+    const handleEditPost = (post) => {
+        setEditingPost(post);
+        setEditPostData({ title: post.title, content: post.content, category: post.category });
+        updatePost()
+    };
 
     const handlePostSubmit = async () => {
         const response = await fetch('http://localhost:8000/social/new/', {
@@ -296,19 +211,23 @@ const Profile = () => {
         });
 
         if (response.ok) {
+            console.log("it entered")
             const post = await response.json();
             setPosts([post, ...posts]);
             setNewPost({ title: '', content: '', category: 'social' });
-            setIsModalVisible(false);
+            setispostModalVisible(false);
         }
     };
+
+    // =================================== POSTS =================================
+
 
     const openChatWithFriend = (friend) => {
         setActiveFriend(friend);
         setChatVisible(true); // Show chat window
     };
 
-    // console.log(posts[0])
+
     return (
         <Fragment>
             {/* Profile Info */}
@@ -323,13 +242,13 @@ const Profile = () => {
                                 src={`http://localhost:8000${profile.user?.profile_image}`}
                                 alt="Profile"
                                 className="w-24 h-24 rounded-full shadow-lg"
-                                onClick={() => setModalVisible(true)}
+                                onClick={() => setisImageModalVisible(true)}
                                 style={{ cursor: 'pointer', width: '100px', height: '100px' }} // Adjust as needed
                             />
                             <Modal
                                 title="Update Profile Image"
-                                visible={modalVisible}
-                                onCancel={() => setModalVisible(false)}
+                                open={isImageModalVisible}
+                                onCancel={() => setisImageModalVisible(false)}
                                 footer={[
                                     <Button key="submit" type="primary" onClick={handleSubmit}>
                                         Update
@@ -350,7 +269,7 @@ const Profile = () => {
 
                         {/* Create Post Button */}
                         <div className="mt-6">
-                            <Button type="primary" onClick={() => setIsModalVisible(true)}>
+                            <Button type="primary" onClick={() => setispostModalVisible(true)}>
                                 Create Post
                             </Button>
                         </div>
@@ -358,9 +277,9 @@ const Profile = () => {
                         {/* Modal for Creating Post */}
                         <Modal
                             title="Create New Post"
-                            open={isModalVisible}
+                            open={ispostModalVisible}
                             onOk={handlePostSubmit}
-                            onCancel={() => setIsModalVisible(false)}
+                            onCancel={() => setispostModalVisible(false)}
                         >
                             <Input
                                 placeholder="Post Title"
@@ -413,6 +332,10 @@ const Profile = () => {
                                             post={post}
                                             onEdit={handleEditPost}
                                             onDelete={deletePost}
+                                            profile={profile}
+                                            likePost={likePost}
+                                            sharePost={sharePost}
+                                            liked={liked}
                                         />
                                     ))}
                                 </div>
@@ -444,10 +367,10 @@ const Profile = () => {
                     </>
                 )}
             </div>
-            {/* Edit Post Modal */}
+            {/* ------------------------- Edit Post Modal -------------------------------- */}
             <Modal
                 title="Edit Post"
-                visible={Boolean(editingPost)}
+                open={Boolean(editingPost)}
                 onOk={updatePost}
                 onCancel={() => setEditingPost(null)}
             >
@@ -472,6 +395,7 @@ const Profile = () => {
                     <Option value="education">Educational Post</Option>
                 </Select>
             </Modal>
+            {/* ------------------------- Edit Post Modal -------------------------------- */}
         </Fragment>
     );
 };

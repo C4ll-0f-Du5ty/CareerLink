@@ -1,0 +1,168 @@
+{
+    "api": {
+        "users": {
+            "1": {
+                "url": "localhost:8000/users/profile/<str:username>/",
+                "type": "GET",
+                "Description": "Gets Specific User Profile",
+                "structure": {
+                    "user": {
+                        "id": 1,
+                        "username": "allem",
+                        "email": "",
+                        "first_name": "",
+                        "last_name": "",
+                        "profile_image": "/media/profile_images/عالم.jpg",
+                        "bio": ""
+                    },
+                    "followers_count": 4,
+                    "friends_count": 4
+                }
+            },
+            "2": {
+                "url": "localhost:8000/users/all/",
+                "type": "GET",
+                "Description": "Gets all Users Profiles",
+                "structure": {
+                    "user": {
+                        "id": 1,
+                        "username": "allem",
+                        "email": "",
+                        "first_name": "",
+                        "last_name": "",
+                        "profile_image": "/media/profile_images/عالم.jpg",
+                        "bio": ""
+                    },
+                    "followers_count": 4,
+                    "friends_count": 4
+                },
+                "etc": "The Rest..........."
+            },
+            "3": {
+                "url": "localhost:8000/users/friends/<str:username>/",
+                "type": "GET",
+                "Description": "Gets all Friends of 1 user",
+                "structure": {
+                    "id": 3,
+                    "username": "test2",
+                    "email": "",
+                    "first_name": "",
+                    "last_name": "",
+                    "profile_image": "/media/profile_images/leon.jpg",
+                    "bio": null
+                },
+                "etc": "The Rest..........."
+            },
+            "4": {
+                "url": "localhost:8000/users/chatHistory/<str:friend_username>/",
+                "type": "GET",
+                "Description": "Gets the CHat Histroy of a conversation using the friend name",
+                "structure": {
+                    "id": 21,
+                    "sender": 1,
+                    "receiver": 3,
+                    "content": "hi",
+                    "timestamp": "2024-09-27T11:27:19.164455Z"
+                },
+                "etc": "The Rest..........."
+            },
+            "5": {
+                "url": "localhost:8000/users/friend-request/<str:username>/",
+                "type": "POST",
+                "Description": "sending A new friend request to a friend username"
+            },
+            "6": {
+                "url": "localhost:8000/users/friend-request/accept/<int:request_id>/",
+                "type": "POST",
+                "Description": "accepting the friend request on my notification bar"
+            },
+            "7": {
+                "url": "localhost:8000/users/notifications/",
+                "type": "GET",
+                "Description": "Gets all the user notifications ",
+                "structure": {
+                    "id": 13,
+                    "from_user": "iti",
+                    "type": "friend_request",
+                    "created_at": "2024-10-01T05:44:12.277091Z",
+                    "is_read": true,
+                    "friend_request": 12,
+                    "friend_request_state": true
+                },
+                "etc": "The Rest..........."
+            },
+            "8": {
+                "url": "localhost:8000/users/update_image/",
+                "type": "POST",
+                "Description": "updates the User Image "
+            },
+            "9": {}
+        },
+        "social": {
+            "1": {
+                "url": "localhost:8000/social/posts/<str:username>/",
+                "type": "GET",
+                "Description": "Get Specific User Posts "
+            },
+            "2": {
+                "url": "localhost:8000/social/posts/",
+                "type": "GET",
+                "Description": "Get all the latest posts of all users",
+                "structure": {
+                    "id": 26,
+                    "author": "allem",
+                    "title": "gg",
+                    "content": "test",
+                    "category": "job",
+                    "likes": [
+                        1
+                    ],
+                    "shares": [],
+                    "created_at": "2024-10-18T09:46:02.963384Z",
+                    "likes_count": 1,
+                    "shares_count": 0,
+                    "profile_image": "/media/profile_images/عالم.jpg"
+                }
+            },
+            "3": {
+                "url": "localhost:8000/social/search/",
+                "type": "GET",
+                "Description": "Searching through the data base using q param passed through the fetch request",
+                "structure": {
+                    "users": [
+                        {
+                            "id": 2,
+                            "username": "test",
+                            "email": "gg@gg.com",
+                            "first_name": "",
+                            "last_name": "",
+                            "profile_image": "/media/profile_images/default.jpg",
+                            "bio": null
+                        }
+                    ],
+                    "etc1": "The Rest...........",
+                    "posts": [
+                        {
+                            "id": 3,
+                            "author": "test",
+                            "title": "Networking Night",
+                            "content": "Last night's event brought together 50 professionals from finance and tech sectors",
+                            "category": "social",
+                            "likes": [
+                                5
+                            ],
+                            "shares": [
+                                7
+                            ],
+                            "created_at": "2024-09-25T16:06:56.576118Z",
+                            "likes_count": 1,
+                            "shares_count": 1,
+                            "profile_image": "/media/profile_images/default.jpg"
+                        }
+                    ],
+                    "etc2": "The Rest..........."
+                }
+            }
+        }
+    }
+}

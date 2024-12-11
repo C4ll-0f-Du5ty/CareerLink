@@ -24,7 +24,7 @@ function Nav() {
                 <div className={style.container}>
                     <div className={style['left-side']}>
                         <a href="/" className={style["navbar-brand"]}>Dusty</a>
-                        <a href="{% url 'posts:list' %}" className={style['navbar-brand']}>📤</a>
+                        {/* <a href="{% url 'posts:list' %}" className={style['navbar-brand']}>📤</a> */}
                         {user ? <><Notification />
                         </> : ''}
                     </div>

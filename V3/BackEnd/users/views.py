@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import CustomUser, UserProfile, ChatMessage, FriendRequest, Notification
-from .serializers import CustomUserSerializer, UserProfileSerializer, ChatMessageSerializer
+from .serializers import CustomUserSerializer, UserProfileSerializer, ChatMessageSerializer, NotificationSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -221,7 +221,9 @@ def send_friend_request(request, username):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_notifications(request):
-    notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    # print(NotificationSerializer(notifications))
+    print(list(n.friend_request for n in notifications))
     return Response([
         {
             'id': notification.id,
@@ -230,6 +232,7 @@ def get_notifications(request):
             'created_at': notification.created_at,
             'is_read': notification.is_read,
             'friend_request': notification.friend_request.id,
+            'friend_request_state': notification.friend_request.is_accepted,
         } for notification in notifications
     ])
 
