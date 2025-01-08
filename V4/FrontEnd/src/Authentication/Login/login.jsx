@@ -47,7 +47,7 @@ function Login() {
                             <form onSubmit={handleSubmit} className="space-y-6 mt-8">
                                 <div className="-space-y-px rounded-md shadow-sm">
                                     <div>
-                                        <label htmlFor="email-address" className="sr-only">Email address</label>
+                                        <label htmlFor="email-address" className="sr-only">UserName</label>
                                         <input
                                             id="email-address"
                                             name="username"
