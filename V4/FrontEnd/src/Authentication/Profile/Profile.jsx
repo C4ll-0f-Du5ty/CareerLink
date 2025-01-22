@@ -5,6 +5,7 @@ import AuthContext from '../../Context/AuthContext';
 import Messages from '../../Chats/Messages';
 import { toast } from 'react-toastify';
 import PostCard from '../../Card/PostCard'
+import { Link } from 'react-router-dom'
 
 const { Option } = Select;
 
@@ -316,7 +317,8 @@ const Profile = () => {
                                             className="cursor-pointer flex items-center space-x-3 p-2 bg-gray-50 rounded-lg shadow hover:shadow-lg transition-all hover:bg-gray-100"
                                         >
                                             <img src={`http://localhost:8000${friend.profile_image}`} alt={friend.username} className="w-10 h-10 rounded-full" />
-                                            <p className="text-sm">{friend.username}</p>
+
+                                            <p className="text-sm"><Link to={`/${friend.username}`} className="group text-black">  {friend.username}</Link></p>
                                         </div>
                                     ))}
                                 </div>

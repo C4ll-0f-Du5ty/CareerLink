@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from 'antd';
 import AuthContext from '../Context/AuthContext';
@@ -12,6 +12,7 @@ const SearchPage = () => {
     const [liked, setLiked] = useState({});
     const location = useLocation();
     const { authTokens, user } = useContext(AuthContext)
+    const Navigate = useNavigate()
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -144,24 +145,42 @@ const SearchPage = () => {
         }
     };
 
-    const UserCard = ({ user }) => (
+    const handleGuests = () => {
+        Navigate('/login')
+    }
+
+    const UserCard = ({ Cuser }) => (
         <motion.div className="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center space-x-4">
-                <img src={`http://localhost:8000${user.profile_image}`} alt={user.username} className="w-16 h-16 rounded-full" />
+                <img src={`http://localhost:8000${Cuser.profile_image}`} alt={Cuser.username} className="w-16 h-16 rounded-full" />
                 <div>
-                    <Link to={`/${user.username}`} className="group text-black"> <h3 className="font-bold text-lg group-hover:scale-110 group-hover:text-blue-500 transition-transform duration-300 ease-in-out"> {user.username} </h3> </Link>
-                    <p className="text-gray-500 text-sm">{user.email}</p>
+                    <Link to={`/${Cuser.username}`} className="group text-black"> <h3 className="font-bold text-lg group-hover:scale-110 group-hover:text-blue-500 transition-transform duration-300 ease-in-out"> {Cuser.username} </h3> </Link>
+                    <p className="text-gray-500 text-sm">{Cuser.email}</p>
                 </div>
                 {/* Check if friends data is available and the user is not already a friend */}
-                {!isFriend(user.id) ? (
-                    <Button onClick={() => sendFriendRequest(user.username)}>
-                        {isFriend(user.id)
+                {!isFriend(Cuser.id) ? (
+                    <Button onClick={() => {
+                        if (!user) {
+                            toast.error("You're not authenticated to Send Friend Request", {
+                                position: "top-center",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                            handleGuests()
+                        }
+                        else sendFriendRequest(Cuser.username);
+                    }}>
+                        {isFriend(Cuser.id)
                             ? 'Request Pending'
                             : 'Add Friend'}
                     </Button>
                 ) :
                     // <Button onClick={() => alert("YAY")}>
-                    //     {isFriend(user.id)
+                    //     {isFriend(Cuser.id)
                     //         ? 'Request Pending'
                     //         : 'Add Friend'}
                     // </Button>
@@ -230,8 +249,8 @@ const SearchPage = () => {
                 <div>
                     <h2 className="text-2xl font-bold text-gray-700 mb-4">Users</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
-                        {results.users.map((user) => (
-                            <UserCard key={user.id} user={user} handleAddFriend={handleAddFriend} />
+                        {results.users.map((Cuser) => (
+                            <UserCard key={Cuser.id} Cuser={Cuser} handleAddFriend={handleAddFriend} />
 
                         ))}
                     </div>

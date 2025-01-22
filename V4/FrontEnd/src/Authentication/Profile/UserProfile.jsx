@@ -10,7 +10,7 @@ const UserProfile = () => {
     const [profileData, setProfileData] = useState({});
     const [loading, setLoading] = useState(true);
     const [isFriend, setIsFriend] = useState(false);
-    const { authTokens } = useContext(AuthContext)
+    const { user, authTokens } = useContext(AuthContext)
 
     useEffect(() => {
         const fetchProfileWithPosts = async () => {
@@ -26,6 +26,7 @@ const UserProfile = () => {
                 );
                 const data = await response.json();
                 setProfileData(data);
+                console.log(data)
                 setIsFriend(data.is_friend);
                 setLoading(false);
             } catch (error) {
@@ -116,16 +117,23 @@ const UserProfile = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
             >
-                {isFriend ? (
-                    <button className="py-2 px-4 bg-gray-300 text-gray-700 rounded-lg cursor-not-allowed">
-                        Already Friends
-                    </button>
-                ) : (
+                {user ? (
+                    isFriend ? (
+                        <button className="py-2 px-4 bg-gray-300 text-gray-700 rounded-lg cursor-not-allowed">
+                            Already Friends
+                        </button>
+                    ) : (
+                        <button
+                            className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                            onClick={sendFriendRequest}
+                        >
+                            Add Friend
+                        </button>
+                    )) : (
                     <button
                         className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                        onClick={sendFriendRequest}
                     >
-                        Add Friend
+                        <a href="/login">Login</a>
                     </button>
                 )}
             </motion.div>

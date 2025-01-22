@@ -29,7 +29,7 @@ function ErrorRoute({ children }) {
     }, [user]);
 
     if (redirect) {
-        console.log(user)
+        // console.log(user)
 
         return <Navigate to={'/profile'} replace />;
     }
