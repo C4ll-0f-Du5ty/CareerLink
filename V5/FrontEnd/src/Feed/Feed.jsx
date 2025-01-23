@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Button } from "antd";
 import AuthContext from "../Context/AuthContext";
 import { toast } from "react-toastify";
+import { Link } from 'react-router-dom'
+import moment from "moment"; // For handling relative time format
 
 const Feed = () => {
     const { authTokens, user } = useContext(AuthContext);
@@ -28,7 +30,7 @@ const Feed = () => {
                     throw new Error("Failed to fetch feed data");
                 }
             } catch (error) {
-                setError(error.message); // Save the error message to display later
+                setError(error.message);
                 console.error("Error fetching feed:", error);
             } finally {
                 setLoading(false);
@@ -98,6 +100,10 @@ const Feed = () => {
         }
     };
 
+    const formatDate = (date) => {
+        return moment(date).fromNow(); // Using moment.js to handle relative time format
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -140,7 +146,7 @@ const Feed = () => {
                                         className="w-12 h-12 rounded-full mr-4"
                                     />
                                     <div>
-                                        <p className="font-semibold text-gray-800">{user.username}</p>
+                                        <p className="font-semibold text-gray-800"><Link to={`/${user.username}`} className="group text-black">{user.username}</Link></p>
                                         <p className="text-sm text-gray-500">{user.bio || "No bio available"}</p>
                                     </div>
                                 </div>
@@ -175,12 +181,15 @@ const Feed = () => {
                                         className="w-12 h-12 rounded-full mr-4"
                                     />
                                     <div>
-                                        <p className="font-semibold text-gray-800">{post.author}</p>
+                                        <p className="font-semibold text-gray-800"><Link to={`/${post.author}`} className="group text-black">{post.author}</Link></p>
                                         <p className="text-sm text-gray-500">{post.category || "General"}</p>
                                     </div>
                                 </div>
                                 <h3 className="text-xl font-bold text-gray-900">{post.title}</h3>
                                 <p className="text-gray-700 mt-2">{post.content}</p>
+                                <p className="text-gray-400 text-xs">
+                                    Created at: {(formatDate(post.created_at)).toLocaleString()}
+                                </p>{/* Post date */}
                                 <div className="flex items-center justify-between mt-4">
                                     <motion.button
                                         className="flex items-center text-gray-600 hover:text-blue-500 transition"

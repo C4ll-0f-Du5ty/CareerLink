@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Button } from 'antd';
 import AuthContext from '../Context/AuthContext';
 import { toast } from 'react-toastify';
+import moment from "moment";
 
 
 const SearchPage = () => {
@@ -193,6 +194,9 @@ const SearchPage = () => {
     );
 
 
+    const formatDate = (date) => {
+        return moment(date).fromNow()
+    }
 
     const PostCard = ({ post }) => (
         <motion.div
@@ -210,7 +214,8 @@ const SearchPage = () => {
                     className="w-12 h-12 rounded-full"
                 />
                 <div className="ml-4">
-                    <h2 className="text-md font-semibold">{post.author}</h2>
+                    <h2 className="text-md font-semibold"><Link to={`/${post.author}`} className="group text-black">{post.author}</Link></h2>
+                    <p className="text-sm text-gray-500">{post.category || "General"}</p>
                     <p className="text-gray-500 text-sm">{post.title}</p>
                 </div>
             </div>
@@ -221,7 +226,7 @@ const SearchPage = () => {
                     <span>Shares: {post.shares_count}</span>
                 </div>
                 <p className="text-gray-400 text-xs">
-                    Created at: {new Date(post.created_at).toLocaleString()}
+                    Created at: {(formatDate(post.created_at)).toLocaleString()}
                 </p>
             </div>
             <div className="flex justify-between items-center mt-4">
@@ -242,6 +247,8 @@ const SearchPage = () => {
             </div>
         </motion.div>
     );
+
+
 
     return (
         <div className="max-w-4xl mx-auto p-4 mt-32">
