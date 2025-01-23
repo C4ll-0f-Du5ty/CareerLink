@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from 'react'
 import { jwtDecode } from "jwt-decode";
-
+import jwtEncode from 'jwt-encode';
 const AuthContext = createContext()
 
 export default AuthContext;
@@ -79,8 +79,31 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    let updateUsername = (newUsername) => {
+        setUser((prev) => {
+            console.log("Previous User:", prev); // Log before update
+            const updatedUser = prev ? { ...prev, username: newUsername } : prev;
+            console.log("Updated User:", updatedUser); // Log after update
+
+            // const newAccessToken = jwtEncode(updatedUser, "Dusty");
+
+            // // Update the authTokens with the new access token
+            // setAuthTokens((prevTokens) => ({
+            //     ...prevTokens,
+            //     access: newAccessToken,
+            // }));
+            return updatedUser;
+        });
+
+        // const newAccessToken = jwtEncode(user);
+        // localStorage.setItem("authTokens", JSON.stringify(data))
+    };
+
+    console.log('Context', user)
+
     let contextData = {
         user: user,
+        updateUsername: updateUsername,
         authTokens: authTokens,
         loginUser: loginUser, // return the function here
         logoutUser: logoutUser,

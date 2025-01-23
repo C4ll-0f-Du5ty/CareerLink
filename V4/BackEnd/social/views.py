@@ -78,10 +78,11 @@ def get_latest_posts(request):
 @api_view(['GET'])
 def search(request):
     query = request.query_params.get('q')
+    requestUser = request.query_params.get('key') or None
     
     if query:
         # Search through users excluding id and password
-        users = CustomUser.objects.filter(username__icontains=query).only('username', 'email', 'profile_image')
+        users = CustomUser.objects.filter(username__icontains=query).only('username', 'email', 'profile_image').exclude(username=requestUser)
         
         # Search through posts by author, title, and content
         posts = Post.objects.filter(

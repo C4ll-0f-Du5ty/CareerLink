@@ -21,35 +21,58 @@ def get_profile(request, username=None):
         return Response(serializer.data)
 
 
-@api_view(['PUT'])
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def update_profile(request):
+#     user = CustomUser.objects.get(username=request.user)
+#     data = request.data
+
+#     # Check if the username is already taken
+#     if CustomUser.objects.filter(username=data.get('username')).exclude(id=user.id).exists():
+#         return Response(
+#             {"error": "This username is already taken. Please choose a different one."},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+
+#     # Update fields
+#     user.username = data.get('username', user.username)
+#     user.first_name = data.get('first_name', user.first_name)
+#     user.last_name = data.get('last_name', user.last_name)
+#     user.email = data.get('email', user.email)
+#     user.bio = data.get('bio', user.bio)
+#     user.save()
+
+#     return Response(
+#         {"message": "Profile updated successfully."},
+#         status=status.HTTP_200_OK
+#     )
+
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_profile(request):
     user = request.user
     data = request.data
 
     # Check if the username is already taken
-    if CustomUser.objects.filter(username=data.get('username')).exclude(id=user.id).exists():
+    if 'username' in data and CustomUser.objects.filter(username=data['username']).exclude(id=user.id).exists():
         return Response(
             {"error": "This username is already taken. Please choose a different one."},
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Update fields
+    # Update fields only if they are provided
     user.username = data.get('username', user.username)
     user.first_name = data.get('first_name', user.first_name)
     user.last_name = data.get('last_name', user.last_name)
     user.email = data.get('email', user.email)
+    user.bio = data.get('bio', user.bio)
     user.save()
 
-    # Update UserProfile
-    profile = UserProfile.objects.get(user=user)
-    profile.bio = data.get('bio', profile.bio)
-    profile.save()
-
     return Response(
-        {"message": "Profile updated successfully."},
-        status=status.HTTP_200_OK
+        {"message": "Profile updated successfully.", "username": user.username, "bio": user.bio},
+            status=status.HTTP_200_OK 
     )
+
 
 
 #Getting all users with their profiles
@@ -208,23 +231,23 @@ def update_profile_image(request):
         return Response({'error': 'User profile not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def update_user(request):
-    user  = UserProfile(username=request.user)
-    data = request.data
-    # if data
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def update_user(request):
+#     user  = UserProfile(username=request.user)
+#     data = request.data
+#     # if data
 
 
-@api_view(['GET'])
-def temp(request):
-    user = UserProfile.objects.all().filter(id = 1)
-    serializer = UserProfileSerializer(user, many=True)
+# @api_view(['GET'])
+# def temp(request):
+#     user = UserProfile.objects.all().filter(id = 1)
+#     serializer = UserProfileSerializer(user, many=True)
     
-    # print("Request:", dir(request))
-    data = request.data
-    print("Request:", data['user'].get('username'), " ==> ", type(data), "||||||", request.user)
-    return Response(serializer.data)
+#     # print("Request:", dir(request))
+#     data = request.data
+#     print("Request:", data['user'].get('username'), " ==> ", type(data), "||||||", request.user)
+#     return Response(serializer.data)
 
 
 
@@ -257,6 +280,7 @@ def fix_friendships():
                 friend_profile.friends.add(user)
                 print(f"Added {user} as a friend of {friend}")
     print("Friendship symmetry fix completed.")
+
 
 
 def delete_all_friend_requests_and_notifications():
