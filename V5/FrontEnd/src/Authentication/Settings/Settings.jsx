@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import AuthContext from '../../Context/AuthContext';
 import { motion } from 'framer-motion';
-
+import { toast } from 'react-toastify'
 const Settings = () => {
     const { user, authTokens, updateUsername } = useContext(AuthContext);
     const [formData, setFormData] = useState({});
@@ -46,7 +46,15 @@ const Settings = () => {
         });
 
         if (response.status === 200) {
-            alert("Profile updated successfully!");
+            toast.success("Profile updated successfully!", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             updateUsername(formData.username);
         } else {
             const data = await response.json();

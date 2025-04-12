@@ -40,7 +40,6 @@ function Login() {
                         <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <div className="text-center sm:mt-5">
                                 <h2 className="text-3xl font-extrabold text-gray-900 transition-colors duration-300 ease-in-out hover:text-indigo-600">Sign in to your account</h2>
-                                <p className="mt-1 text-sm text-gray-600 transition-colors duration-300 ease-in-out hover:text-indigo-600">Or <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">start your 14-day free trial</a></p>
                             </div>
                             <form onSubmit={handleSubmit} className="space-y-6 mt-8">
                                 <div className="-space-y-px rounded-md shadow-sm">
